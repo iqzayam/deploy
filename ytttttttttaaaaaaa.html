@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASEK TULALIT</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+  }
+  .container {
+    text-align: center;
+    color: #fff;
+    max-width: 500px;
+    padding: 25px;
+  }
+  h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    animation: fadeIn 2s ease-in-out;
+  }
+  #text {
+    font-size: 1.1em;
+    min-height: 100px;
+    opacity: 0;
+    animation: fadeInText 2s ease forwards;
+  }
+  input, textarea {
+    margin-top: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1em;
+    outline: none;
+    resize: none;
+  }
+  textarea {
+    height: 80px;
+  }
+  button {
+    margin-top: 15px;
+    background: #ff6b81;
+    border: none;
+    padding: 12px 25px;
+    color: #fff;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  button:hover {
+    background: #ff8fa3;
+    transform: scale(1.05);
+  }
+  .heart {
+    position: absolute;
+    color: rgba(255,255,255,0.7);
+    animation: float 6s linear infinite;
+  }
+  @keyframes fadeInText {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+  }
+  @keyframes float {
+    0% {transform: translateY(100vh) scale(0);}
+    100% {transform: translateY(-10vh) scale(1);}
+  }
+  /* efek getar dan partikel */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
+  }
+  .shake {
+    animation: shake 0.3s ease;
+  }
+  .tiny-heart {
+    position: absolute;
+    font-size: 16px;
+    opacity: 0;
+    animation: floatUp 1s ease forwards;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-40px) scale(0.6); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Anu Ekhemmm</h1>
+    <p id="text"></p>
+    <div id="balasan" style="margin-top:20px; opacity:1; transition:1s;">
+      <input id="nama" type="text" placeholder="Nama kamu..." />
+      <textarea id="reply" placeholder="Tulis balasanmu di sini..."></textarea>
+      <button id="sendBtn" onclick="kirimBalasan(this)">Kirim Balasan </button>
+    </div>
+  </div>
+
+  <script>
+    // ==== KONFIGURASI BOT TELE ====
+    const BOT_TOKEN = "8095503017:AAHRWr8CY9DWm6jf2jNFOJruqgreQR5QnMA"; // contoh: 8095503017:AAHR...
+    const OWNER_ID = "8175022256"; // contoh: 8175022256
+
+    // ==== TEKS CONFESS DARI KAMU ====
+    const teks = [
+      "Besstiii akuuu i senengggg mbekk awamuu 💕",
+      "Rapopooo orakkk ceweannnn mentengggg 😳",
+      "Isoooo chatannn mbekkk cahhh ayuuuu 💘",
+      "Pokokeee kowe sing nggawe aku mesem terus 😚"
+    ];
+
+    const textElement = document.getElementById("text");
+    let i = 0;
+
+    function tampilkanTeks() {
+      textElement.style.opacity = "1";
+      textElement.innerHTML = teks[i];
+      i = (i + 1) % teks.length;
+      setTimeout(tampilkanTeks, 3000);
+    }
+    window.onload = tampilkanTeks;
+
+    // ==== Efek hati jatuh ====
+    function buatHati() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = 15 + Math.random() * 25 + "px";
+      heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(buatHati, 250);
+
+    // ==== Efek partikel kecil saat klik tombol ====
+    function efekHatiKecil(button) {
+      for (let i = 0; i < 6; i++) {
+        const kecil = document.createElement("span");
+        kecil.classList.add("tiny-heart");
+        kecil.textContent = "💖";
+        kecil.style.left = 45 + (Math.random() * 10 - 5) + "%";
+        kecil.style.top = "50%";
+        button.appendChild(kecil);
+        setTimeout(() => kecil.remove(), 1000);
+      }
+    }
+
+    // ==== Kirim balasan ke Telegram ====
+    async function kirimBalasan(button) {
+      const nama = document.getElementById("nama").value.trim();
+      const balasan = document.getElementById("reply").value.trim();
+      if (!balasan) return alert("Isi dulu balasanmu 😳");
+
+      button.classList.add("shake");
+      efekHatiKecil(button);
+      setTimeout(() => button.classList.remove("shake"), 500);
+
+      const emojis = ["💘", "💞", "💓", "💕", "💝", "💖"];
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+      const pesan = `
+${emoji} *「 𝐁𝐀𝐋𝐀𝐒𝐀𝐍 𝐂𝐎𝐍𝐅𝐄𝐒𝐒 𝐌𝐀𝐒𝐔𝐊 」* ${emoji}
+━━━━━━━━━━━━━━━━━━━━━━━
+👤 *Nama:* ${nama || "_Anonim_"}
+💬 *Pesan:*
+"${balasan}"
+━━━━━━━━━━━━━━━━━━━━━━━
+🕊 *Diterima dari Halaman Confess*
+✨ *From: Starlight 💫*
+`;
+
+      try {
+        const kirim = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: OWNER_ID, text: pesan, parse_mode: "Markdown" })
+        });
+
+        if (kirim.ok) {
+          const notif = [
+            "💌 Pesanmu udah terbang ke Starlight 💫",
+            "✨ Balasanmu berhasil dikirim 💕",
+            "💞 Confess kamu udah sampai 😳",
+            "💖 Dikirim ke hati Starlight 💫"
+          ];
+          alert(notif[Math.floor(Math.random() * notif.length)]);
+          document.getElementById("reply").value = "";
+        } else {
+          alert("❌ Gagal kirim 😭 Cek token bot & ID kamu.");
+        }
+      } catch (err) {
+        alert("⚠️ Terjadi error: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
